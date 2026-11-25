@@ -17,5 +17,19 @@ def test_L6K():
     driver.find_element(By.NAME, "country").send_keys("Россия")
     driver.find_element(By.NAME, "job-position").send_keys("QA")
     driver.find_element(By.NAME, "company").send_keys("SkyPro")
+    submit_button = driver.find_element(By.XPATH, "//button[@type='submit']")
+    submit_button.click()
+    wait = WebDriverWait(driver, 10)
+    zip_code_field = wait.until(EC.presence_of_element_located((By.ID, "zip-code")))
+    assert "alert-danger" in zip_code_field.get_attribute("class"), "Поле zip code должно быть красным"
 
+    green_fields_ids = [
+        "first-name", "last-name", "address", "city",
+        "country", "e-mail", "phone", "job-position", "company"
+    ]
+
+    for field_id in green_fields_ids:
+        field = driver.find_element(By.ID, field_id)
+        field_classes = field.get_attribute('class')
+        assert "alert-success" in field_classes, f"Поле {field_id} должно быть зеленым, классы:{field_classes}"
     driver.quit()
